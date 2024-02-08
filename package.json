@@ -25,8 +25,10 @@
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/sequelize": "^10.0.0",
+    "chess-fen": "^1.0.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "node-stockfish": "github:svr-dev/node-stockfish",
     "pg": "^8.11.3",
     "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.1.13",
@@ -73,5 +75,6 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  }
+  },
+  "type": "module"
 }

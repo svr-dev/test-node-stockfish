@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from "@nestjs/sequelize";
 import { ConfigModule } from "@nestjs/config";
-import { GameModule } from './game/game.module';
+import { GameModule } from "./game/game.module.js";
+import { EngineModule } from "./engine/engine.module.js";
+import { BoardModule } from './board/board.module.js';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { GameModule } from './game/game.module';
       })
     }),
     GameModule,
+    EngineModule,
+    BoardModule,
   ],
   controllers: [],
   providers: [],
