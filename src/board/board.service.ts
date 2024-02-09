@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { FenArgs, BoardContent, CastlingRights } from 'chess-fen';
+import { FenArgs, BoardContent, CastlingRights, BOARD_CONTENT } from 'chess-fen';
 import { Fen } from 'chess-fen/dist/Fen.js';
 
 export type MoveType = 'regular'|'double_pawn_push' | 'en_passant' | 'castling' | 'capture' | 'promotion';
@@ -13,6 +13,10 @@ export class BoardService {
     'e8g8': { kingTo: 'g8', rookFrom: 'h8', rookTo: 'f8' },
     'e8c8': { kingTo: 'c8', rookFrom: 'a8', rookTo: 'd8' }
   };
+  
+  checkFiftyMoveRule(currentFen: Fen): boolean {
+    return currentFen.halfMoves >= 100;
+  }
 
   updateFen(currentFen: Fen, move: string): Fen {
     const sourceSquare = move.substring(0, 2);

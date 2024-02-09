@@ -25,6 +25,7 @@ export class GameService {
     console.log('Game started: ', fen.toString());
 
     while (gameFinished < 50) {
+      if (this.boardService.checkFiftyMoveRule(fen)) return 'Game result: Draw (50 move-rule)'
       // Implement logic to make moves until the game is finished
       const move = await this.engineService.getBestMove(fen.toString(), 5);
       console.log('-----')
