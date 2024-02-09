@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { FenArgs, BoardContent, CastlingRights } from 'chess-fen';
-import { Fen } from "chess-fen/dist/Fen.js";
+import { Fen } from 'chess-fen/dist/Fen.js';
 
-export type MoveType = 'regular'|'double_pawn_push' | 'en_passant' | 'castling' | 'capture';
+export type MoveType = 'regular'|'double_pawn_push' | 'en_passant' | 'castling' | 'capture' | 'promotion';
 
 @Injectable()
 export class BoardService {
@@ -34,7 +34,11 @@ export class BoardService {
                         currentFen: Fen,
                         sourceSquare: string,
                         destinationSquare: string): MoveType {
-    if (movingPiece.toUpperCase() === 'P' && Math.abs(parseInt(sourceSquare[1]) - parseInt(destinationSquare[1])) === 2) {
+    if (movingPiece.toUpperCase() === 'P' && move.length === 5) {
+      console.log('[PROMOTION]')
+      return 'promotion';
+    }
+    else if (movingPiece.toUpperCase() === 'P' && Math.abs(parseInt(sourceSquare[1]) - parseInt(destinationSquare[1])) === 2) {
       console.log('[DOUBLE_PAWN_PUSH]')
       return 'double_pawn_push';
     }
@@ -70,15 +74,20 @@ export class BoardService {
           .clear(sourceSquare)
           .update(destinationSquare, movingPiece);
         break;
-        
+
       case 'en_passant':
         updatedFen = currentFen
           .clear(sourceSquare)
           .update(destinationSquare, movingPiece)
           // Remove the captured pawn
-          .clear(this.getEnPassantCaptureSquare(destinationSquare, currentFen.toMove));
+          .clear(
+            this.getEnPassantCaptureSquare(
+              destinationSquare,
+              currentFen.toMove,
+            ),
+          );
         break;
-        
+
       case 'castling':
         const { kingTo, rookFrom, rookTo } = this.kingCastleMoves[move];
         updatedFen = currentFen
@@ -87,6 +96,12 @@ export class BoardService {
           .update(kingTo, movingPiece)
           .update(rookTo, currentFen.get(rookFrom));
         break;
+        
+      case 'promotion':
+        const promotionPiece = BOARD_CONTENT[move.charAt(move.length - 1)]
+        updatedFen = currentFen
+          .clear(sourceSquare)
+          .update(destinationSquare, promotionPiece);
     }
 
     // Update castling rights and other FenArgs based on the move
