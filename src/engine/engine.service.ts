@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { StockfishInstance, StockfishAnalysis } from 'node-stockfish';
-
-type SkillLevel = {
-  level: string;
-  depth: number;
-};
+import { StockfishInstance } from 'node-stockfish';
+import { SkillLevel } from "../types/types.js";
 
 @Injectable()
 export class EngineService {

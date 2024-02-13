@@ -4,6 +4,7 @@ import { ConfigModule } from "@nestjs/config";
 import { GameModule } from "./game/game.module.js";
 import { EngineModule } from "./engine/engine.module.js";
 import { BoardModule } from './board/board.module.js';
+import { DbModule } from './db/db.module.js';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { BoardModule } from './board/board.module.js';
     GameModule,
     EngineModule,
     BoardModule,
+    DbModule,
   ],
   controllers: [],
   providers: [],

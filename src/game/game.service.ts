@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { EngineService } from "../engine/engine.service.js";
-import { Fen } from "chess-fen/dist/Fen.js";
-import { BoardService } from "../board/board.service.js";
-import { GameRequestDTO } from './dto/game-request.dto.js';
+import { EngineService } from '../engine/engine.service.js';
+import { Fen } from 'chess-fen/dist/Fen.js';
+import { BoardService } from '../board/board.service.js';
+import { DbService } from '../db/db.service.js';
+import { ICreateGameAttrs } from '../interfaces/interfaces.js';
+import { GameMode, GameResult } from '../types/types.js';
 
 @Injectable()
 export class GameService {
   constructor(
     private engineService: EngineService,
     private boardService: BoardService,
+    private dbService: DbService,
   ) {}
 
   async playGame(params: GameRequestDTO) {

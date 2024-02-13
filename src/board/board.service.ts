@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FenArgs, BoardContent, CastlingRights, BOARD_CONTENT } from 'chess-fen';
 import { Fen } from 'chess-fen/dist/Fen.js';
-
-export type MoveType = 'regular'|'double_pawn_push' | 'en_passant' | 'castling' | 'capture' | 'promotion';
+import { MoveType } from "../types/types.js";
 
 @Injectable()
 export class BoardService {
@@ -15,7 +14,7 @@ export class BoardService {
     'e8c8': { kingTo: 'c8', rookFrom: 'a8', rookTo: 'd8' }
   };
 
-  updateFen(currentFen: Fen, move: string): Fen {
+  makeMove(currentFen: Fen, move: string): Fen {
     const sourceSquare = move.substring(0, 2);
     const destinationSquare = move.substring(2, 4);
     const movingPiece = currentFen.get(sourceSquare);
@@ -27,7 +26,11 @@ export class BoardService {
     
     const moveType: MoveType = this.setMoveType(move, movingPiece, currentFen, sourceSquare, destinationSquare);
     
-    return this.makeMove(currentFen, move, movingPiece, moveType, sourceSquare, destinationSquare);
+    const updatedFen = this.updateFen(currentFen, move, movingPiece, moveType, sourceSquare, destinationSquare);
+    // Update position history for threefold repetition detection later
+    this.updatePositionHistory(updatedFen.toString());
+    
+    return updatedFen
   }
 
   private setMoveType(move: string,
