@@ -37,6 +37,8 @@ export class GameService {
 
         if (this.boardService.checkFiftyMoveRule(fen)) {
           console.log('Game result: Draw due to 50-move rule.');
+        if (this.boardService.checkThreefoldRepetition()) {
+          console.log('Game result: Draw due to threefold repetition.');
           break;
         }
       }

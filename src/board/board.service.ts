@@ -6,6 +6,7 @@ export type MoveType = 'regular'|'double_pawn_push' | 'en_passant' | 'castling' 
 
 @Injectable()
 export class BoardService {
+  private positionsHistory: Map<string, number> = new Map();
   private readonly initialRookPositions = ['a1', 'h1', 'a8', 'h8'];
   private readonly kingCastleMoves = {
     'e1g1': { kingTo: 'g1', rookFrom: 'h1', rookTo: 'f1' },
@@ -13,10 +14,6 @@ export class BoardService {
     'e8g8': { kingTo: 'g8', rookFrom: 'h8', rookTo: 'f8' },
     'e8c8': { kingTo: 'c8', rookFrom: 'a8', rookTo: 'd8' }
   };
-  
-  checkFiftyMoveRule(currentFen: Fen): boolean {
-    return currentFen.halfMoves >= 100;
-  }
 
   updateFen(currentFen: Fen, move: string): Fen {
     const sourceSquare = move.substring(0, 2);
@@ -187,5 +184,27 @@ export class BoardService {
   private calculateHalfMoves(halfMovesCount: number, movingPiece: BoardContent, moveType: MoveType): number {
     if (movingPiece.toUpperCase() === 'P' || moveType === 'capture') return 0;
     return halfMovesCount + 1;
+  }
+
+  checkFiftyMoveRule(currentFen: Fen): boolean {
+    return currentFen.halfMoves >= 100;
+  }
+
+  checkThreefoldRepetition(): boolean {
+    for (const [, count] of this.positionsHistory) {
+      if (count >= 3) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private updatePositionHistory(fenString: string): void {
+    // Cut out moves/half moves
+    const normalizedFen = fenString.split(' ').slice(0, -2).join(' ');
+    // Determine the count of position repeats
+    const currentCount = (this.positionsHistory.get(normalizedFen) || 0) + 1;
+
+    this.positionsHistory.set(normalizedFen, currentCount);
   }
 }
