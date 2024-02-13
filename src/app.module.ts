@@ -6,6 +6,7 @@ import { EngineModule } from "./engine/engine.module.js";
 import { BoardModule } from './board/board.module.js';
 import { DbModule } from './db/db.module.js';
 import { DumpModule } from './dump/dump.module.js';
+import { AppService } from './app.service.js';
 
 @Module({
   imports: [
@@ -35,6 +36,6 @@ import { DumpModule } from './dump/dump.module.js';
     DumpModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [AppService],
 })
 export class AppModule {}

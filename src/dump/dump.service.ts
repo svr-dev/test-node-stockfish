@@ -68,8 +68,9 @@ export class DumpService {
     try {
       await fs.mkdir(dumpDir, { recursive: true });
       const command = `pg_dump -U ${process.env.POSTGRES_USER} ${process.env.POSTGRES_DB} > ${dumpFilePath}`;
-      await execAsync(command);
-      console.log(`[DumpService] Database dumped to ${dumpFilePath}`);
+      await execAsync(command).then(() =>{
+        console.log(`[DumpService] Database dumped to ${dumpFilePath}`);
+      });
     } catch (err) {
       console.error('Error dumping database:', err);
     }

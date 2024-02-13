@@ -4,6 +4,7 @@ import { SkillLevel } from "../types/types.js";
 
 @Injectable()
 export class EngineService {
+  private readonly stockfishInstances: StockfishInstance[] = [];
   private readonly stockfishWhite: StockfishInstance;
   private readonly stockfishBlack: StockfishInstance;
   private readonly skillLevels: SkillLevel[] = [
@@ -16,16 +17,12 @@ export class EngineService {
   constructor() {
     this.stockfishWhite = StockfishInstance.getInstance();
     this.stockfishBlack = StockfishInstance.getInstance();
+    this.stockfishInstances.push(this.stockfishWhite, this.stockfishBlack);
     // Randomly assign difficulty levels for white and black
     this.playerLevels = {
       w: this.skillLevels[Math.floor(Math.random() * this.skillLevels.length)],
       b: this.skillLevels[Math.floor(Math.random() * this.skillLevels.length)]
     };
-    // Info message with timeout to appear after project initialization
-    setTimeout(() => {
-      console.log(`White will play at level "${this.playerLevels.w.level}" with depth ${this.playerLevels.w.depth}, ` +
-        `Black at level "${this.playerLevels.b.level}" with depth ${this.playerLevels.b.depth}.`);
-    },500)
   }
   async getBestMove(fen: string) {
     return new Promise((resolve, reject) => {
@@ -55,5 +52,12 @@ export class EngineService {
   }
   getSkillLevels(): { w: SkillLevel, b: SkillLevel } {
     return this.playerLevels
+  }
+  terminateAllInstances() {
+    this.stockfishInstances.forEach((instance) => {
+      instance.stopAnalysing();
+      instance.stopUsing();
+      instance.terminate();
+    });
   }
 }
