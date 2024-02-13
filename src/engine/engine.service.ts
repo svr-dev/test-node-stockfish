@@ -37,15 +37,12 @@ export class EngineService {
 
       const onAnalysis = (analysis: { lines: string | any[] }) => {
         if (analysis['noLegalMoves'] === true) {
-          console.log('No legal moves available - game ended.');
           reject('noLegalMoves');
-        } else if (
+        }
+        else if (
           analysis.lines.length > 0 &&
           stockfish.currentDepth === this.playerLevels[player].depth - 1
         ) {
-          console.log('analysis: ', analysis);
-          console.log('analysis lines: ');
-          console.log(analysis.lines[0]);
           resolve(analysis.lines[0].moves[0]);
 
           // Cleanup listener to avoid memory leak
@@ -55,5 +52,8 @@ export class EngineService {
       };
       stockfish.onAnalysisData(onAnalysis);
     });
+  }
+  getSkillLevels(): { w: SkillLevel, b: SkillLevel } {
+    return this.playerLevels
   }
 }

@@ -34,35 +34,31 @@ export class BoardService {
   }
 
   private setMoveType(move: string,
-                        movingPiece: BoardContent,
-                        currentFen: Fen,
-                        sourceSquare: string,
-                        destinationSquare: string): MoveType {
+                      movingPiece: BoardContent,
+                      currentFen: Fen,
+                      sourceSquare: string,
+                      destinationSquare: string): MoveType {
+    
     if (movingPiece.toUpperCase() === 'P' && move.length === 5) {
-      console.log('[PROMOTION]')
       return 'promotion';
     }
     else if (movingPiece.toUpperCase() === 'P' && Math.abs(parseInt(sourceSquare[1]) - parseInt(destinationSquare[1])) === 2) {
-      console.log('[DOUBLE_PAWN_PUSH]')
       return 'double_pawn_push';
     }
     else if (movingPiece.toUpperCase() === 'P' && destinationSquare === currentFen.enPassantSquare) {
-      console.log('[EN_PASSANT]')
       return 'en_passant';
     }
     else if (Object.keys(this.kingCastleMoves).includes(move) && ['K', 'k'].includes(movingPiece)) {
-      console.log('[CASTLE]')
       return 'castling';
     }
     else if (currentFen.isOccupied(destinationSquare)) {
-      console.log('[CAPTURE]')
       return 'capture';
     }
-    console.log('[REGULAR]')
+    
     return 'regular';
   }
-
-  private makeMove(currentFen: Fen,
+  
+  private updateFen(currentFen: Fen,
                    move: string,
                    movingPiece: BoardContent,
                    moveType: MoveType,
@@ -173,8 +169,7 @@ export class BoardService {
     // Construct the square notation of the captured pawn
     return `${capturedFile}${capturedRank}`;
   }
-
-
+  
   private setEnPassantSquare(sourceSquare: string, destinationSquare: string): string {
     // Calculate the rank of the en passant target square
     const enPassantRank = (parseInt(sourceSquare[1]) + parseInt(destinationSquare[1])) / 2;

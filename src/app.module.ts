@@ -19,7 +19,12 @@ import { DbModule } from './db/db.module.js';
         username: process.env.POSTGRES_USER,
         password: process.env.POSTGRES_PASSWORD,
         database: process.env.POSTGRES_DB,
-        autoLoadModels: true
+        autoLoadModels: true,
+        logging: (msg) => {
+          if (msg.includes('Error')) {
+            console.error(msg);
+          }
+        }
       })
     }),
     GameModule,
