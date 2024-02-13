@@ -13,3 +13,8 @@ export interface IUpdateGameAttrs {
   move?: string;
   game_result?: GameResult;
 }
+
+export interface IPlayedGame {
+  id: number;
+  game_result: GameResult;
+}

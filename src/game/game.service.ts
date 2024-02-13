@@ -3,7 +3,7 @@ import { EngineService } from '../engine/engine.service.js';
 import { Fen } from 'chess-fen/dist/Fen.js';
 import { BoardService } from '../board/board.service.js';
 import { DbService } from '../db/db.service.js';
-import { ICreateGameAttrs } from '../interfaces/interfaces.js';
+import { ICreateGameAttrs, IPlayedGame } from "../interfaces/interfaces.js";
 import { GameMode, GameResult } from '../types/types.js';
 
 @Injectable()
@@ -15,13 +15,13 @@ export class GameService {
     private dbService: DbService,
   ) {}
 
-  async playGame(gameMode: string) {
+  async playGame(gameMode: string): Promise<IPlayedGame> {
     if (gameMode === 'demo') {
       return this.playDemoGame();
     }
   }
 
-  private async playDemoGame(): Promise<string> {
+  private async playDemoGame(): Promise<IPlayedGame> {
     let fen = new Fen();
     const playerSkillLevels = this.engineService.getSkillLevels();
     const gameData: ICreateGameAttrs = {
@@ -34,21 +34,21 @@ export class GameService {
     const createdGame = await this.dbService.createGame(gameData);
     this.gameId = createdGame.id;
     let gameResult = null;
+    let playedGame: IPlayedGame = null;
     console.log('[GameService] Game started.')
     
     try {
       while (true) {
         const move = await this.engineService.getBestMove(fen.toString());
         if (typeof move === 'string') {
-          fen = this.boardService.makeMove(fen, move);
-          
           const player = fen.toString().split(' ')[1];
           console.log(`[GameService] ${player === 'w' ? 'White' : 'Black'} move: ${move}`)
+          fen = this.boardService.makeMove(fen, move);
           await this.dbService.updateGame(this.gameId, { move: move });
         }
 
         if (this.boardService.checkFiftyMoveRule(fen)) {
-          console.log('Game result: Draw due to 50-move rule.');
+          console.log('[GameService] Game result: Draw due to 50-move rule.');
           fen.printBoard();
           await this.dbService.updateGame(this.gameId, {
             game_result: GameResult.DrawFiftyMoveRule,
@@ -58,7 +58,7 @@ export class GameService {
         }
 
         if (this.boardService.checkThreefoldRepetition()) {
-          console.log('Game result: Draw due to threefold repetition.');
+          console.log('[GameService] Game result: Draw due to threefold repetition.');
           fen.printBoard();
           await this.dbService.updateGame(this.gameId, {
             game_result: GameResult.DrawThreefoldRepetition,
@@ -71,9 +71,7 @@ export class GameService {
       if (error === 'noLegalMoves') {
         const player = fen.toString().split(' ')[1];
         gameResult = player === 'w' ? GameResult.BlackWins : GameResult.WhiteWins
-        console.log(
-          `Game result: ${gameResult}`,
-        );
+        console.log(`[GameService] Game result: ${gameResult}`);
         fen.printBoard();
         await this.dbService.updateGame(this.gameId, {
           game_result:
@@ -81,7 +79,12 @@ export class GameService {
         });
       }
     }
-
-    return gameResult;
+    if (gameResult) {
+      playedGame = {
+        id: this.gameId,
+        game_result: gameResult
+      }
+    }
+    return playedGame;
   }
 }

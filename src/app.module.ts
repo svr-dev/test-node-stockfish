@@ -5,6 +5,7 @@ import { GameModule } from "./game/game.module.js";
 import { EngineModule } from "./engine/engine.module.js";
 import { BoardModule } from './board/board.module.js';
 import { DbModule } from './db/db.module.js';
+import { DumpModule } from './dump/dump.module.js';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { DbModule } from './db/db.module.js';
     EngineModule,
     BoardModule,
     DbModule,
+    DumpModule,
   ],
   controllers: [],
   providers: [],

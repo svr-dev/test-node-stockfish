@@ -8,7 +8,7 @@ export class EngineService {
   private readonly stockfishBlack: StockfishInstance;
   private readonly skillLevels: SkillLevel[] = [
     { level: 'easy', depth: 1 },
-    { level: 'medium', depth: 5 },
+    { level: 'medium', depth: 3 },
     { level: 'hard', depth: 20 }
   ];
   private readonly playerLevels: { w: SkillLevel; b: SkillLevel };

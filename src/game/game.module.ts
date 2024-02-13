@@ -4,6 +4,7 @@ import { GameService } from "./game.service.js";
 import { EngineModule } from "../engine/engine.module.js";
 import { BoardModule } from "../board/board.module.js";
 import { DbModule } from "../db/db.module.js";
+import { DumpModule } from "../dump/dump.module.js";
 
 @Module({
   controllers: [GameController],
@@ -11,7 +12,8 @@ import { DbModule } from "../db/db.module.js";
   imports: [
     EngineModule,
     BoardModule,
-    DbModule
+    DbModule,
+    DumpModule
   ]
 })
 export class GameModule {}
