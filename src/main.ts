@@ -2,11 +2,9 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from "./app.module.js";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const PORT = process.env.PORT || 3000;
-  
-  await app.listen(PORT, () => console.log(`[SERVER] Server running on port ${PORT}`));
+  await NestFactory.createApplicationContext(AppModule).catch((error) => {
+    console.error('[Bootstrap] Application failed to start', error);
+  });
 }
-bootstrap().then(() => {
-  console.log(`------------------------------------`)
-})
+
+bootstrap();
